@@ -12,7 +12,7 @@ from tailor.api.serializers import (
     ProductCreateSerializer, ColorSerializer,
     OrderSerializer, OrderCreateSerializer, OrderItemSerializer, OrderItemCreateSerializer
 )
-from tailorproject.tailor.api import serializers
+
 
 # -------- Settings API Views ---------
 

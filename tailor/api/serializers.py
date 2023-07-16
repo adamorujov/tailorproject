@@ -3,7 +3,7 @@ from tailor.models import (
     SettingsModel, ContactInformationModel, ProductModel, SizeModel, ColorModel,
     OrderModel, OrderItemModel
 )
-from tailorproject.account.api.serializers import CustomerSerializer
+from account.api.serializers import CustomerSerializer
 
 class SettingsSerializer(serializers.ModelSerializer):
     class Meta:
