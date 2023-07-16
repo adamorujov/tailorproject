@@ -9,5 +9,5 @@ urlpatterns = [
     path('message-list/', views.MessageListAPIView.as_view(), name="message-list"),
     path('message-create/', views.MessageCreateAPIView.as_view(), name="message-create"),
     path('message-retrieve/<int:id>/', views.MessageRetrieveAPIView.as_view(), name="message-retrieve"),
-    path('message-delete/<int:id>/', views.MessageDeleteAPIView(), name="message-delete"),
+    path('message-delete/<int:id>/', views.MessageDeleteAPIView.as_view(), name="message-delete"),
 ]
