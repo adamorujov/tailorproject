@@ -79,11 +79,19 @@ class OrderModel(models.Model):
     status = models.CharField("Status", max_length=2, choices=STATUS, default="CM")
 
     class Meta:
-        verbose_name = "Sifariş"
-        verbose_name_plural = "Sifarişlər"
+        verbose_name = "Sifarişçi"
+        verbose_name_plural = "Sifarişçilər"
+
+    def save(self):
+        if self.user:
+            self.first_name = self.user.first_name
+            self.last_name = self.user.last_name
+            self.email = self.user.email
+            self.phone_number = self.user.phone_number
+        return super().save()
 
     def __str__(self):
-        return self.user.first_name + " " + self.user.last_name if self.user else self.first_name + " " + self.last_name
+        return self.email
 
 
 class OrderItemModel(models.Model):
@@ -93,7 +101,7 @@ class OrderItemModel(models.Model):
 
     class Meta:
         verbose_name = "Sifariş edilən"
-        verbose_name_plural = "Sifarişlər edilənlər"
+        verbose_name_plural = "Sifariş edilənlər"
         ordering = ("-id",)
 
     def __str__(self):

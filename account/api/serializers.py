@@ -9,7 +9,7 @@ class CustomerSerializer(serializers.ModelSerializer):
 class CustomerCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
-        fields = ("email", "password")
+        fields = ("first_name", "last_name", "email", "phone_number", "password")
 
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
