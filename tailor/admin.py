@@ -16,6 +16,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 class OrderItemAdmin(admin.TabularInline):
     model = OrderItemModel
+    readonly_fields = ('product', 'order', 'quantity')
     extra = 3
 
 @admin.register(OrderModel)
@@ -23,6 +24,10 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ("__str__", "status")
     list_filter = ("status",)
     search_fields = ('first_name', 'last_name', 'email')
+    readonly_fields = ('user', 'first_name', 'last_name', 
+                       'email', 'phone_number', 'address',
+                       'note',
+                    )
     inlines = [OrderItemAdmin]
     actions = ['mark_in_c', 'mark_in_cm']
 
