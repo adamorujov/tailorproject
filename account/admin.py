@@ -1,7 +1,8 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 from account.models import Customer, Message
+
 
 @admin.register(Customer)
 class CustomerAdmin(UserAdmin):
@@ -24,5 +25,19 @@ class CustomerAdmin(UserAdmin):
 
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'name', 'email', 'phone_number')
+    list_display = ('ad', 'mail', 'telefon', 'status')
+    list_editable = ('status',)
+    actions = ['mark_as_read', 'mark_as_unread']
+
+    @admin.action(description="Oxunmuş kimi işarələ")
+    def mark_as_read(self, request, queryset):
+        updated = queryset.update(status=True)
+        self.message_user(request, "Seçilmiş mesajlar oxunmuş kimi işarələndi.", messages.SUCCESS)
+
+    @admin.action(description="Oxunmamış kimi işarələ")
+    def mark_as_unread(self, request, queryset):
+        updated = queryset.update(status=False)
+        self.message_user(request, "Seçilmiş mesajlar oxunmamış kimi işarələndi.", messages.SUCCESS)
+
+
 

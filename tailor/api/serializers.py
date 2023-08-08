@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from tailor.models import (
     SettingsModel, ContactInformationModel, ProductModel, SizeModel, ColorModel,
-    OrderModel, OrderItemModel
+    OrderModel, OrderItemModel, CategoryModel, ProductImageModel, FavouriteModel
 )
 from account.api.serializers import CustomerSerializer
 
@@ -25,9 +25,21 @@ class ColorSerializer(serializers.ModelSerializer):
         model = ColorModel
         fields = "__all__"
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CategoryModel
+        fields = "__all__"
+
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImageModel
+        fields = "__all__"
+
 class ProductSerializer(serializers.ModelSerializer):
     sizes = SizeSerializer(many=True)
     colors = ColorSerializer(many=True)
+    categories = CategorySerializer(many=True)
+    product_images = ProductImageSerializer(many=True)
     class Meta:
         model = ProductModel
         fields = "__all__"
@@ -62,3 +74,9 @@ class OrderItemCreateSerializer(serializers.ModelSerializer):
         model = OrderItemModel
         fields = "__all__"
 
+class FavouriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FavouriteModel
+        fields = "__all__"
+
+        

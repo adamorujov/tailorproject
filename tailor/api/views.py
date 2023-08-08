@@ -5,12 +5,13 @@ from rest_framework.generics import (
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from tailor.models import (
     SettingsModel, ContactInformationModel, ProductModel, SizeModel, ColorModel,
-    OrderModel, OrderItemModel
+    OrderModel, OrderItemModel, CategoryModel, ProductImageModel, FavouriteModel
 )
 from tailor.api.serializers import (
     SettingsSerializer, ContactInformationSerializer, ProductSerializer, SizeSerializer,
     ProductCreateSerializer, ColorSerializer,
-    OrderSerializer, OrderCreateSerializer, OrderItemSerializer, OrderItemCreateSerializer
+    OrderSerializer, OrderCreateSerializer, OrderItemSerializer, OrderItemCreateSerializer,
+    CategorySerializer, ProductImageSerializer, FavouriteSerializer
 )
 
 
@@ -144,4 +145,52 @@ class OrderItemCreateAPIView(CreateAPIView):
 class OrderItemRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     queryset = OrderItemModel
     serializer_class = OrderItemCreateSerializer
+    lookup_field = "id"
+
+# ----------- Category API View ----------
+class CategoryListAPIView(ListAPIView):
+    queryset = CategoryModel.objects.all()
+    serializer_class = CategorySerializer
+
+class CategoryCreateAPIView(CreateAPIView):
+    queryset = CategoryModel.objects.all()
+    serializer_class = CategorySerializer
+
+class CategoryRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = CategoryModel.objects.all()
+    serializer_class = CategorySerializer
+    lookup_field = "id"
+
+# --------- Product Image API View ----------
+class ProductImageListAPIView(ListAPIView):
+    queryset = ProductImageModel.objects.all()
+    serializer_class = ProductImageSerializer
+
+class ProductImageCreateAPIView(CreateAPIView):
+    queryset = ProductImageModel.objects.all()
+    serializer_class = ProductImageSerializer
+
+class ProductImageRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = ProductImageModel.objects.all()
+    serializer_class = ProductImageSerializer
+    lookup_field = "id"
+
+# ---------- Favourite API View --------
+class FavouriteListAPIView(ListAPIView):
+    queryset = FavouriteModel.objects.all()
+    serializer_class = FavouriteSerializer
+
+class CustomerFavouriteListAPIView(ListAPIView):
+    def get_queryset(self):
+        return FavouriteModel.objects.filter(user=self.request.user)
+    serializer_class = FavouriteSerializer
+    permission_classes = (IsAuthenticated,)
+
+class FavouriteCreateAPIView(CreateAPIView):
+    queryset = FavouriteModel.objects.all()
+    serializer_class = FavouriteSerializer
+
+class FavouriteRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = FavouriteModel.objects.all()
+    serializer_class = FavouriteSerializer
     lookup_field = "id"

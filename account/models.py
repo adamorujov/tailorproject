@@ -1,9 +1,11 @@
-from typing import Iterable, Optional
 from django.db import models
 from django.contrib import auth
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import RegexValidator
+from django.utils.html import mark_safe
+
+from django.utils.functional import lazy
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -80,17 +82,34 @@ class Customer(AbstractUser):
 
     objects = UserManager()
 
+class VerboseName(str):
+    def __init__(self, func):
+        self.func = func
+
+    def decode(self, encoding, erros):
+        return self.func().decode(encoding, erros)
 
 class Message(models.Model):
     name = models.CharField("Ad",max_length=50)
     email = models.EmailField("Email", max_length=250)
     phone_number = models.CharField("Əlaqə nömrəsi",max_length=17)
     message = models.TextField("Mesaj")
+    status = models.BooleanField("Status", default=False)
 
     class Meta:
-        ordering = ["-id"]
+        ordering = ["-status", "-id"]
         verbose_name = "Mesaj"
-        verbose_name_plural = "Mesajlar"
+        verbose_name_plural = lazy(lambda: _('Mesajlar ({})').format(Message.objects.filter(status=False).count()), str)()
+
+    def ad(self):
+        return mark_safe(f"<b>{self.name}</b>") if not self.status else mark_safe(f"{self.name}")
+    
+    def mail(self):
+        return mark_safe(f"<b>{self.email}</b>") if not self.status else mark_safe(f"{self.email}")
+    
+    def telefon(self):
+        return mark_safe(f"<b>{self.phone_number}</b>" if not self.status else mark_safe(f"{self.phone_number}"))
 
     def __str__(self):
         return self.name
+

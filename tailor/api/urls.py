@@ -31,4 +31,18 @@ urlpatterns = [
     path('myorderitems/', views.OrderOrderItemListAPIView.as_view(), name="myorderitems"),
     path('orderitem-create/', views.OrderItemCreateAPIView.as_view(), name="orderitem-create"),
     path('orderitem-retrieve-update-delete/<int:id>/', views.OrderItemRetrieveUpdateDestroyAPIView.as_view(), name="orderitem-retrive-update-delete"),
+
+    path('category-list/', views.CategoryListAPIView.as_view(), name="category-list"),
+    path('category-create/', views.CategoryCreateAPIView.as_view(), name="category-create"),
+    path('category-retrieve-update-delete/<int:id>/', views.CategoryListAPIView.as_view(), name="category-retrieve-update-delete"),
+
+    path('productimage-list/', views.ProductImageListAPIView.as_view(), name="productimage-list"),
+    path('productimage-create/', views.ProductImageCreateAPIView.as_view(), name="productimage-create"),
+    path('productimage-retrieve-update-delete/<int:id>/', views.ProductImageRetrieveUpdateDestroyAPIView.as_view(), name="productimage-retrieve-update-delete"),
+
+    path('favourite-list/', views.FavouriteListAPIView.as_view(), name="favourite-list"),
+    path('myfavourite-list/', views.CustomerFavouriteListAPIView.as_view(), name="myfavourite-list"),
+    path('favourite-create/', views.FavouriteCreateAPIView.as_view(), name="favourite-create"),
+    path('favourite-retrieve-update-delete/<int:id>/', views.FavouriteRetrieveUpdateDestroyAPIView.as_view(), name="favourite-retrieve-update-delete"),
+
 ]

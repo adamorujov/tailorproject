@@ -1,5 +1,10 @@
 from django.db import models
 from account.models import Customer
+from django.utils.html import mark_safe
+from ckeditor.fields import RichTextField
+from django.utils.translation import gettext_lazy as _
+
+from django.utils.functional import lazy
 
 class SettingsModel(models.Model):
     logo = models.ImageField("Loqo", upload_to="logo/", blank=True, null=True)
@@ -48,13 +53,37 @@ class ColorModel(models.Model):
     def __str__(self):
         return self.color
     
+class CategoryModel(models.Model):
+    name = models.CharField(verbose_name="Ad", max_length=528)
+
+    class Meta:
+        verbose_name = "Kateqoriya"
+        verbose_name_plural = "Kateqoriyalar"
+        ordering = ("-id", )
+
+    def __str__(self):
+        return self.name
+    
 class ProductModel(models.Model):
     image = models.ImageField("Şəkil", upload_to="product_images/", blank=True, null=True)
     title = models.CharField("Başlıq", max_length=512)
     price = models.FloatField("Qiymət", default=0)
     sale_price = models.FloatField("Endirimli qiymət", blank=True, null=True)
-    sizes = models.ManyToManyField(SizeModel, verbose_name="Ölçülər", blank=True)
-    colors = models.ManyToManyField(ColorModel, verbose_name="Rənglər", blank=True)
+    sizes = models.ManyToManyField(SizeModel, verbose_name="Ölçülər", blank=True, related_name="size_products")
+    colors = models.ManyToManyField(ColorModel, verbose_name="Rənglər", blank=True, related_name="color_products")
+    characteristics = RichTextField(verbose_name="Xarakteristika", blank=True, null=True)
+    note = RichTextField(verbose_name="Qeyd", blank=True, null=True)
+    categories = models.ManyToManyField(CategoryModel, blank=True, related_name="category_products")
+
+
+    def img_preview(self): #new
+        return mark_safe(f'<img src = "{self.image.url}" width = "20" />')
+    
+    def show_price(self):
+        return mark_safe(f'<b>{self.price} AZN</b>')
+    
+    def show_sale_price(self):
+        return mark_safe(f'<b>{self.sale_price} AZN</b>')
 
     class Meta:
         verbose_name = "Məhsul"
@@ -63,6 +92,21 @@ class ProductModel(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+class ProductImageModel(models.Model):
+    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name="product_images")
+    image = models.ImageField(upload_to="product_images/")
+
+    class Meta:
+        verbose_name = "Məhsul şəkli"
+        verbose_name_plural = "Məhsul şəkilləri"
+        ordering = ("-id",)
+
+    def __str__(self):
+        return self.image.url
+    
+    def img_preview(self):
+        return mark_safe(f"<img src='{self.image.url}' width='20'/>")
     
 class OrderModel(models.Model):
     STATUS = [
@@ -80,7 +124,13 @@ class OrderModel(models.Model):
 
     class Meta:
         verbose_name = "Sifarişçi"
-        verbose_name_plural = "Sifarişçilər"
+        verbose_name_plural = lazy(lambda: _("Sifarişçilər ({})").format(OrderModel.objects.filter(status="CM").count()), str)()
+
+    def Email(self):
+        return mark_safe(f"<b>{self.email}</b>") if self.status == "CM" else mark_safe(f"{self.email}")
+    
+    def Status(self):
+        return mark_safe(f"<b>Çatdırılmayıb</b>") if self.status == "CM" else mark_safe(f"Çatdırılıb")
 
     def save(self):
         if self.user:
@@ -98,6 +148,8 @@ class OrderItemModel(models.Model):
     product = models.ForeignKey(ProductModel, verbose_name="Məhsul", on_delete=models.CASCADE, related_name="product_orderitems")
     order = models.ForeignKey(OrderModel, verbose_name="Sifariş", on_delete=models.CASCADE, related_name="order_orderitems")
     quantity = models.IntegerField("Miqdar", default=0)
+    color = models.CharField("Rəng", max_length=100, blank=True, null=True)
+    size = models.CharField("Ölçü", max_length=100, blank=True, null=True)
 
     class Meta:
         verbose_name = "Sifariş edilən"
@@ -106,3 +158,17 @@ class OrderItemModel(models.Model):
 
     def __str__(self):
         return self.product.title + " x " + str(self.quantity)
+    
+
+class FavouriteModel(models.Model):
+    user = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="user_favourites")
+    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name="product_favourites")
+
+    class Meta:
+        verbose_name = "Favorit"
+        verbose_name_plural = "Favoritlər"
+        ordering = ("-id",)
+
+    def __str__(self):
+        return self.user.username + " | " + self.product.title
+    
