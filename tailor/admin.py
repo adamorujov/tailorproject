@@ -7,6 +7,11 @@ from tailor.models import (
     )
 from django.utils.translation import gettext_lazy
 
+# from django.contrib.admin.sites import AdminSite
+
+# AdminSite.site_header = 'Techmasoft administrasiyası'
+# AdminSite.site_title = 'Techmasoft sayt administratoru'
+
 admin.site.register(ContactInformationModel)
 admin.site.register(SizeModel)
 admin.site.register(ColorModel)
@@ -59,4 +64,3 @@ class OrderAdmin(admin.ModelAdmin):
     def mark_in_cm(self, request, queryset):
         updated = queryset.update(status="CM")
         self.message_user(request, ("Seçilmiş sifarişlər çatdırılmadı."), messages.SUCCESS)
-

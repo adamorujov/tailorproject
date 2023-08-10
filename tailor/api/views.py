@@ -116,7 +116,7 @@ class CustomerOrderListAPIView(ListAPIView):
 
 class OrderCreateAPIView(CreateAPIView):
     queryset = OrderModel.objects.all()
-    serializer_class = OrderItemCreateSerializer
+    serializer_class = OrderCreateSerializer
 
 class OrderRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     queryset = OrderModel.objects.all()
