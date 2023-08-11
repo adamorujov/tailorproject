@@ -132,13 +132,13 @@ class OrderModel(models.Model):
     def Status(self):
         return mark_safe(f"<b>Çatdırılmayıb</b>") if self.status == "CM" else mark_safe(f"Çatdırılıb")
 
-    def save(self):
+    def save(self, *args, **kwargs):
         if self.user:
             self.first_name = self.user.first_name
             self.last_name = self.user.last_name
             self.email = self.user.email
             self.phone_number = self.user.phone_number
-        return super().save()
+        return super(OrderModel, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.email
