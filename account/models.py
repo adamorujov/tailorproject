@@ -66,11 +66,9 @@ class UserManager(BaseUserManager):
 
 
 class Customer(AbstractUser):
-    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message='Phone number must be entered in the format: +999999999999. Up to 15 digits allowed.')
-
     username = None
     email = models.EmailField(_('email address'), unique=True)
-    phone_number = models.CharField(validators=[phone_regex], max_length=17, blank=True)
+    phone_number = models.CharField(max_length=30, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -82,17 +80,11 @@ class Customer(AbstractUser):
 
     objects = UserManager()
 
-class VerboseName(str):
-    def __init__(self, func):
-        self.func = func
-
-    def decode(self, encoding, erros):
-        return self.func().decode(encoding, erros)
 
 class Message(models.Model):
     name = models.CharField("Ad",max_length=50)
     email = models.EmailField("Email", max_length=250)
-    phone_number = models.CharField("Əlaqə nömrəsi",max_length=17)
+    phone_number = models.CharField("Əlaqə nömrəsi",max_length=30)
     message = models.TextField("Mesaj")
     status = models.BooleanField("Status", default=False)
 

@@ -113,7 +113,7 @@ class OrderModel(models.Model):
         ("C", "Çatdırılıb"),
         ("CM", "Çatdırılmayıb"),
     ]
-    user = models.OneToOneField(Customer, verbose_name="İstifadəçi", on_delete=models.CASCADE, related_name="order", blank=True, null=True)
+    user = models.ForeignKey(Customer, verbose_name="İstifadəçi", on_delete=models.CASCADE, related_name="order", blank=True, null=True)
     first_name = models.CharField("Ad", max_length=100, blank=True, null=True)
     last_name = models.CharField("Soyad", max_length=100, blank=True, null=True)
     email = models.EmailField("Email", max_length=256, blank=True, null=True)
